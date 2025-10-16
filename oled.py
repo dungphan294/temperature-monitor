@@ -27,7 +27,7 @@ while True:
     draw = ImageDraw.Draw(image)
 
     # Load default font
-    font = ImageFont.load_default()
+    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
     text = f"CPU Temp: {get_cpu_temp():.1f}C"
 
     # Calculate text position
