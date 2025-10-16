@@ -8,9 +8,6 @@ from PIL import Image, ImageDraw, ImageFont
 from utils import get_cpu_temp  # your existing function
 
 # --- Configuration ---
-BROKER = "192.168.1.50"         # MQTT broker IP
-TOPIC_TEMP = "pi/temperature"
-TOPIC_FAN = "pi/fan_speed"
 UPDATE_INTERVAL = 5             # seconds
 FAN_PIN = 18                    # PWM pin for motor
 
@@ -26,29 +23,13 @@ i2c = busio.I2C(board.SCL, board.SDA)
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
-# --- MQTT Setup ---
-# client = mqtt.Client()
-
-# def on_connect(client, userdata, flags, rc):
-#     print("Connected to MQTT broker")
-#     client.subscribe(TOPIC_FAN)
-
-# def on_message(client, userdata, msg):
-#     global fan_speed
-#     try:
-#         fan_speed = int(msg.payload.decode())
-#         pwm.ChangeDutyCycle(fan_speed)
-#         print(f"Fan speed set to {fan_speed}%")
-#     except ValueError:
-#         print("Invalid fan speed payload")
-
-# client.on_connect = on_connect
-# client.on_message = on_message
-# client.connect(BROKER, 1883, 60)
-# client.loop_start()
-
 # --- Main Loop ---
 last_update = time.monotonic()
+
+for speed in range(0, 101, 10):
+    pwm.ChangeDutyCycle(speed)
+    print(f"Fan speed: {speed}%")
+    time.sleep(2)
 
 while True:
     now = time.monotonic()
@@ -57,7 +38,6 @@ while True:
 
     # --- CPU Temp ---
     temp = get_cpu_temp() or 0.0
-    # client.publish(TOPIC_TEMP, f"{temp:.1f}")
 
     # --- OLED Display ---
     oled.fill(0)
