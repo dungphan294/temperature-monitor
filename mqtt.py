@@ -4,7 +4,7 @@ import busio
 import RPi.GPIO as GPIO
 from adafruit_ssd1306 import SSD1306_I2C
 from PIL import Image, ImageDraw, ImageFont
-import paho.mqtt.client as mqtt
+# import paho.mqtt.client as mqtt
 from utils import get_cpu_temp  # your existing function
 
 # --- Configuration ---
@@ -27,25 +27,25 @@ oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
 # --- MQTT Setup ---
-client = mqtt.Client()
+# client = mqtt.Client()
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected to MQTT broker")
-    client.subscribe(TOPIC_FAN)
+# def on_connect(client, userdata, flags, rc):
+#     print("Connected to MQTT broker")
+#     client.subscribe(TOPIC_FAN)
 
-def on_message(client, userdata, msg):
-    global fan_speed
-    try:
-        fan_speed = int(msg.payload.decode())
-        pwm.ChangeDutyCycle(fan_speed)
-        print(f"Fan speed set to {fan_speed}%")
-    except ValueError:
-        print("Invalid fan speed payload")
+# def on_message(client, userdata, msg):
+#     global fan_speed
+#     try:
+#         fan_speed = int(msg.payload.decode())
+#         pwm.ChangeDutyCycle(fan_speed)
+#         print(f"Fan speed set to {fan_speed}%")
+#     except ValueError:
+#         print("Invalid fan speed payload")
 
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(BROKER, 1883, 60)
-client.loop_start()
+# client.on_connect = on_connect
+# client.on_message = on_message
+# client.connect(BROKER, 1883, 60)
+# client.loop_start()
 
 # --- Main Loop ---
 last_update = time.monotonic()
@@ -57,7 +57,7 @@ while True:
 
     # --- CPU Temp ---
     temp = get_cpu_temp() or 0.0
-    client.publish(TOPIC_TEMP, f"{temp:.1f}")
+    # client.publish(TOPIC_TEMP, f"{temp:.1f}")
 
     # --- OLED Display ---
     oled.fill(0)
