@@ -8,7 +8,7 @@ import paho.mqtt.client as mqtt
 from utils import get_cpu_temp  # your helper function
 
 # ----- Config -----
-BROKER = "192.168.1.50"         # MQTT broker IP
+BROKER = "192.168.1.16"         # MQTT broker IP
 TOPIC_TEMP = "pi/temperature"
 TOPIC_FAN = "pi/fan_state"
 UPDATE_INTERVAL = 5             # seconds
@@ -25,7 +25,6 @@ oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
 # ----- MQTT -----
-client = mqtt.Client()
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT broker")
@@ -43,6 +42,7 @@ def on_message(client, userdata, msg):
         fan_on = False
         print("Fan turned OFF")
 
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(BROKER, 1883, 60)
