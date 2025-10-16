@@ -27,21 +27,28 @@ while True:
     draw = ImageDraw.Draw(image)
 
     # Load default font
-    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
-    text = f"CPU Temp:\n{get_cpu_temp():.1f} °C"
+    font = ImageFont.truetype(
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
+    # Line 1: Label
+    line1 = "CPU Temp:"
+    bbox1 = draw.textbbox((0, 0), line1, font=font)
+    w1 = bbox1[2] - bbox1[0]
+    x1 = (oled.width - w1) // 2
+    y1 = 10  # top padding
 
-    # Calculate text position
-    bbox = draw.textbbox((0, 0), text, font=font)
-    text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
-
-    # Calculate position for centered text
-    x = (oled.width - text_width) // 2
-    y = (oled.height - text_height) // 2
+    # Line 2: Temperature with degree symbol
+    temp = get_cpu_temp()
+    line2 = f"{temp:.1f} °C"
+    bbox2 = draw.textbbox((0, 0), line2, font=font)
+    w2 = bbox2[2] - bbox2[0]
+    x2 = (oled.width - w2) // 2
+    y2 = y1 + bbox1[3] + 5  # spacing below first line
+    text = f"CPU Temp \n\t{get_cpu_temp():.1f} °C"
 
     # Draw text and show on OLED
-    draw.text((x, y), text, font=font, fill=255)
+    draw.text((x1, y1), line1, font=font, fill=255)
+    draw.text((x2, y2), line2, font=font, fill=255)
     oled.image(image)
     oled.show()
 
