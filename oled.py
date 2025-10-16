@@ -31,7 +31,7 @@ while True:
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
     # Line 1: Label
-    line1 = "CPU Temp:"
+    line1 = "CPU Temp"
     bbox1 = draw.textbbox((0, 0), line1, font=font)
     w1 = bbox1[2] - bbox1[0]
     x1 = (oled.width - w1) // 2
