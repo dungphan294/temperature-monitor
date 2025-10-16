@@ -12,11 +12,11 @@ BROKER = "localhost"         # MQTT broker IP
 TOPIC_TEMP = "pi/temperature"
 TOPIC_FAN = "pi/fan_state"
 UPDATE_INTERVAL = 5             # seconds
-RELAY_PIN = 18                  # GPIO pin controlling the fan relay
+ENABLE_PIN = 4                  # GPIO pin controlling the fan relay
 
 # ----- GPIO -----
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(RELAY_PIN, GPIO.OUT)
+GPIO.setup(ENABLE_PIN, GPIO.OUT, initial=GPIO.LOW)
 fan_on = False
 
 # ----- OLED -----
@@ -34,11 +34,11 @@ def on_message(client, userdata, msg):
     global fan_on
     payload = msg.payload.decode().strip().upper()
     if payload == "ON":
-        GPIO.output(RELAY_PIN, GPIO.LOW)
+        GPIO.output(ENABLE_PIN, GPIO.HIGH)
         fan_on = True
         print("Fan turned ON")
     elif payload == "OFF":
-        GPIO.output(RELAY_PIN, GPIO.HIGH)
+        GPIO.output(ENABLE_PIN, GPIO.LOW)
         fan_on = False
         print("Fan turned OFF")
 
@@ -55,6 +55,7 @@ try:
     while True:
         now = time.monotonic()
         if now - last_update < UPDATE_INTERVAL:
+            time.sleep(0.1)  # Prevent CPU spinning
             continue
 
         # Read CPU temperature
@@ -93,7 +94,7 @@ try:
         last_update = now
 
 except KeyboardInterrupt:
-    GPIO.output(RELAY_PIN, GPIO.HIGH)
+    GPIO.output(ENABLE_PIN, GPIO.LOW)  # Turn off fan
     GPIO.cleanup()
     client.loop_stop()
     client.disconnect()
