@@ -5,7 +5,14 @@ import RPi.GPIO as GPIO
 from adafruit_ssd1306 import SSD1306_I2C
 from PIL import Image, ImageDraw, ImageFont
 import paho.mqtt.client as mqtt
-from utils.utils import get_cpu_temp  # your helper function
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+try:
+    from utils.utils import get_cpu_temp  # works when run directly
+except ImportError:
+    from ..utils.utils import get_cpu_temp  # works when run as package
+
 
 # ----- Config -----
 BROKER = "localhost"         # MQTT broker IP

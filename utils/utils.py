@@ -6,7 +6,3 @@ def get_cpu_temp():
     except Exception as e:
         print(f"Error reading CPU temperature: {e}")
         return None
-
-if __name__ == "__main__":
-    cpu_temp = get_cpu_temp()
-    print(f"CPU Temperature: {cpu_temp:.1f}C")
