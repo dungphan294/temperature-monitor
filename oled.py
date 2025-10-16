@@ -15,9 +15,19 @@ oled.show()
 # Create image buffer
 image = Image.new("1", (oled.width, oled.height))
 draw = ImageDraw.Draw(image)
-font = ImageFont.load_default()
 
-# Draw text
-draw.text((0, 0), "Hello Dung!", font=font, fill=255)
+# Load default font
+font = ImageFont.load_default()
+text = "Hello Dung!"
+
+# Calculate text position
+(text_width, text_height) = draw.textsize(text, font=font)
+
+# Calculate position for centered text
+x = (oled.width - text_width) // 2
+y = (oled.height - text_height) // 2
+
+# Draw text and show on OLED
+draw.text((x, y), text, font=font, fill=255)
 oled.image(image)
 oled.show()
