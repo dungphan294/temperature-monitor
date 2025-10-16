@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 from adafruit_ssd1306 import SSD1306_I2C
 from PIL import Image, ImageDraw, ImageFont
 import paho.mqtt.client as mqtt
-from utils import get_cpu_temp  # your helper function
+from utils.utils import get_cpu_temp  # your helper function
 
 # ----- Config -----
 BROKER = "localhost"         # MQTT broker IP
@@ -94,8 +94,8 @@ try:
         last_update = now
 
 except KeyboardInterrupt:
+    GPIO.cleanup()
     GPIO.output(ENABLE_PIN, GPIO.LOW)  # Turn off fan
-    # GPIO.cleanup()
     client.loop_stop()
     client.disconnect()
     print("Stopped.")
