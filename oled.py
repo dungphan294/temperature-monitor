@@ -3,6 +3,7 @@ import busio
 from digitalio import DigitalInOut
 from adafruit_ssd1306 import SSD1306_I2C
 from PIL import Image, ImageDraw, ImageFont
+from utils import get_cpu_temp
 
 # I2C setup
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -18,7 +19,7 @@ draw = ImageDraw.Draw(image)
 
 # Load default font
 font = ImageFont.load_default()
-text = "Hello Dung!"
+text = f"CPU Temp: {get_cpu_temp():.1f}C"
 
 # Calculate text position
 bbox = draw.textbbox((0, 0), text, font=font)
