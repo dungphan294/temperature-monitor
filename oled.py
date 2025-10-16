@@ -28,7 +28,8 @@ while True:
 
     # Load default font
     font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
-    text = f"CPU Temp: {get_cpu_temp():.1f}C"
+    text = f"CPU Temp:\n{get_cpu_temp():.1f} °C"
+
 
     # Calculate text position
     bbox = draw.textbbox((0, 0), text, font=font)
