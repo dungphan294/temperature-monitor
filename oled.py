@@ -21,7 +21,9 @@ font = ImageFont.load_default()
 text = "Hello Dung!"
 
 # Calculate text position
-(text_width, text_height) = draw.textsize(text, font=font)
+bbox = draw.textbbox((0, 0), text, font=font)
+text_width = bbox[2] - bbox[0]
+text_height = bbox[3] - bbox[1]
 
 # Calculate position for centered text
 x = (oled.width - text_width) // 2
