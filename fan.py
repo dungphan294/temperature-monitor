@@ -41,10 +41,7 @@ def on_message(client, userdata, msg):
         GPIO.output(ENABLE_PIN, GPIO.LOW)
         fan_on = False
         time.sleep(0.1)
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/main
+        
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
@@ -98,7 +95,7 @@ try:
 
 except KeyboardInterrupt:
     GPIO.output(ENABLE_PIN, GPIO.LOW)  # Turn off fan
-    GPIO.cleanup()
+    # GPIO.cleanup()
     client.loop_stop()
     client.disconnect()
     print("Stopped.")
