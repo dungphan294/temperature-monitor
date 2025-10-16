@@ -34,11 +34,11 @@ def on_message(client, userdata, msg):
     global fan_on
     payload = msg.payload.decode().strip().upper()
     if payload == "ON":
-        GPIO.output(RELAY_PIN, GPIO.HIGH)
+        GPIO.output(RELAY_PIN, GPIO.LOW)
         fan_on = True
         print("Fan turned ON")
     elif payload == "OFF":
-        GPIO.output(RELAY_PIN, GPIO.LOW)
+        GPIO.output(RELAY_PIN, GPIO.HIGH)
         fan_on = False
         print("Fan turned OFF")
 
@@ -93,7 +93,7 @@ try:
         last_update = now
 
 except KeyboardInterrupt:
-    GPIO.output(RELAY_PIN, GPIO.LOW)
+    GPIO.output(RELAY_PIN, GPIO.HIGH)
     GPIO.cleanup()
     client.loop_stop()
     client.disconnect()
