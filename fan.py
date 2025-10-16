@@ -8,12 +8,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(FAN_PIN, GPIO.OUT)
 
 # Initialize PWM at 100Hz
-pwm = GPIO.PWM(FAN_PIN, 100)
+pwm = GPIO.PWM(FAN_PIN, 10000000)
 pwm.start(0)
 
 try:
     print("Ramping fan speed up...")
-    for speed in range(0, 101, 10):  # 0% to 100% in steps
+    for speed in range(0, 10000001, 10):  # 0% to 100% in steps
         pwm.ChangeDutyCycle(speed)
         print(f"Fan speed: {speed}%")
         time.sleep(1)
@@ -22,7 +22,7 @@ try:
     time.sleep(2)
 
     print("Ramping fan speed down...")
-    for speed in range(100, -1, -10):  # 100% to 0%
+    for speed in range(10000001, -1, -10):  # 100% to 0%
         pwm.ChangeDutyCycle(speed)
         print(f"Fan speed: {speed}%")
         time.sleep(1)
