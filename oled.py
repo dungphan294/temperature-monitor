@@ -1,10 +1,10 @@
-import board  # board-specific pin names
-import busio  # I2C bus
-from digitalio import DigitalInOut  # digital pin
-from adafruit_ssd1306 import SSD1306_I2C  # OLED driver
-from PIL import Image, ImageDraw, ImageFont  # image and font handling
-from utils import get_cpu_temp  # function to get CPU temperature
-import time  # time handling
+import board
+import busio
+from digitalio import DigitalInOut
+from adafruit_ssd1306 import SSD1306_I2C
+from PIL import Image, ImageDraw, ImageFont
+from utils import get_cpu_temp
+import time
 
 interval = 5  # Update interval in seconds
 last_update = time.monotonic()
