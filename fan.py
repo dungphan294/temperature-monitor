@@ -8,7 +8,7 @@ import paho.mqtt.client as mqtt
 from utils import get_cpu_temp  # your helper function
 
 # ----- Config -----
-BROKER = "192.168.1.16"         # MQTT broker IP
+BROKER = "localhost"         # MQTT broker IP
 TOPIC_TEMP = "pi/temperature"
 TOPIC_FAN = "pi/fan_state"
 UPDATE_INTERVAL = 5             # seconds
@@ -26,7 +26,7 @@ font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
 # ----- MQTT -----
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, reason_code, properties):
     print("Connected to MQTT broker")
     client.subscribe(TOPIC_FAN)
 
