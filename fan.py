@@ -1,37 +1,101 @@
-import RPi.GPIO as GPIO
 import time
+import psutil
+import board
+import busio
+import RPi.GPIO as GPIO
+from adafruit_ssd1306 import SSD1306_I2C
+from PIL import Image, ImageDraw, ImageFont
+import paho.mqtt.client as mqtt
+from utils import get_cpu_temp  # your helper function
 
-FAN_PIN = 18  # Change to your actual GPIO pin
+# ----- Config -----
+BROKER = "192.168.1.50"         # MQTT broker IP
+TOPIC_TEMP = "pi/temperature"
+TOPIC_FAN = "pi/fan_state"
+UPDATE_INTERVAL = 5             # seconds
+RELAY_PIN = 18                  # GPIO pin controlling the fan relay
 
-# Setup
+# ----- GPIO -----
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(FAN_PIN, GPIO.OUT)
+GPIO.setup(RELAY_PIN, GPIO.OUT)
+fan_on = False
 
-# Initialize PWM at 100Hz
-pwm = GPIO.PWM(FAN_PIN, 10000000)
-pwm.start(0)
+# ----- OLED -----
+i2c = busio.I2C(board.SCL, board.SDA)
+oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
+font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+
+# ----- MQTT -----
+client = mqtt.Client()
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected to MQTT broker")
+    client.subscribe(TOPIC_FAN)
+
+def on_message(client, userdata, msg):
+    global fan_on
+    payload = msg.payload.decode().strip().upper()
+    if payload == "ON":
+        GPIO.output(RELAY_PIN, GPIO.HIGH)
+        fan_on = True
+        print("Fan turned ON")
+    elif payload == "OFF":
+        GPIO.output(RELAY_PIN, GPIO.LOW)
+        fan_on = False
+        print("Fan turned OFF")
+
+client.on_connect = on_connect
+client.on_message = on_message
+client.connect(BROKER, 1883, 60)
+client.loop_start()
+
+# ----- Main Loop -----
+last_update = 0
 
 try:
-    print("Ramping fan speed up...")
-    for speed in range(0, 10000001, 10):  # 0% to 100% in steps
-        pwm.ChangeDutyCycle(speed)
-        print(f"Fan speed: {speed}%")
-        time.sleep(1)
+    while True:
+        now = time.monotonic()
+        if now - last_update < UPDATE_INTERVAL:
+            continue
 
-    print("Holding at full speed...")
-    time.sleep(2)
+        # Read CPU temperature
+        temp = get_cpu_temp()  # or psutil.sensors_temperatures()['cpu_thermal'][0].current
+        client.publish(TOPIC_TEMP, f"{temp:.1f}")
 
-    print("Ramping fan speed down...")
-    for speed in range(10000001, -1, -10):  # 100% to 0%
-        pwm.ChangeDutyCycle(speed)
-        print(f"Fan speed: {speed}%")
-        time.sleep(1)
+        # OLED display
+        oled.fill(0)
+        image = Image.new("1", (oled.width, oled.height))
+        draw = ImageDraw.Draw(image)
 
-    print("Test complete.")
+        line1 = "CPU Temp"
+        bbox1 = draw.textbbox((0, 0), line1, font=font)
+        x1 = (oled.width - (bbox1[2] - bbox1[0])) // 2
+        y1 = 10
+
+        line2 = f"{temp:.1f} °C"
+        bbox2 = draw.textbbox((0, 0), line2, font=font)
+        x2 = (oled.width - (bbox2[2] - bbox2[0])) // 2
+        y2 = y1 + bbox1[3] + 5
+
+        line3 = "Fan: ON" if fan_on else "Fan: OFF"
+        bbox3 = draw.textbbox((0, 0), line3, font=font)
+        x3 = (oled.width - (bbox3[2] - bbox3[0])) // 2
+        y3 = y2 + bbox2[3] + 5
+
+        draw.text((x1, y1), line1, font=font, fill=255)
+        draw.text((x2, y2), line2, font=font, fill=255)
+        draw.text((x3, y3), line3, font=font, fill=255)
+
+        oled.image(image)
+        oled.show()
+
+        print(f"Temp: {temp:.1f}°C | Fan: {'ON' if fan_on else 'OFF'}")
+
+        last_update = now
 
 except KeyboardInterrupt:
-    print("Interrupted by user.")
-
-finally:
-    pwm.stop()
+    GPIO.output(RELAY_PIN, GPIO.LOW)
     GPIO.cleanup()
+    client.loop_stop()
+    client.disconnect()
+    print("Stopped.")
