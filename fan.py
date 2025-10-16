@@ -33,15 +33,14 @@ def on_connect(client, userdata, flags, reason_code, properties):
 def on_message(client, userdata, msg):
     global fan_on
     payload = msg.payload.decode().strip().upper()
-    if payload == "ON":
+    if payload == "ON" and not fan_on:
         GPIO.output(ENABLE_PIN, GPIO.HIGH)
         fan_on = True
-        print("Fan turned ON")
+        time.sleep(0.1)
     elif payload == "OFF":
         GPIO.output(ENABLE_PIN, GPIO.LOW)
         fan_on = False
-        print("Fan turned OFF")
-
+        time.sleep(0.1)
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
