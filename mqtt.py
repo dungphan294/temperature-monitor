@@ -1,5 +1,4 @@
 import time
-import psutil
 import board
 import busio
 import RPi.GPIO as GPIO
@@ -57,7 +56,7 @@ while True:
         continue
 
     # --- CPU Temp ---
-    temp = get_cpu_temp()  # or psutil.sensors_temperatures()['cpu_thermal'][0].current
+    temp = get_cpu_temp() or 0.0
     client.publish(TOPIC_TEMP, f"{temp:.1f}")
 
     # --- OLED Display ---
