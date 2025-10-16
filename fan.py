@@ -12,7 +12,7 @@ BROKER = "localhost"         # MQTT broker IP
 TOPIC_TEMP = "pi/temperature"
 TOPIC_FAN = "pi/fan_state"
 UPDATE_INTERVAL = 5             # seconds
-ENABLE_PIN = 4                  # GPIO pin controlling the fan relay
+ENABLE_PIN = 17                  # GPIO pin controlling the fan relay
 
 # ----- GPIO -----
 GPIO.setmode(GPIO.BCM)
@@ -33,14 +33,14 @@ def on_connect(client, userdata, flags, reason_code, properties):
 def on_message(client, userdata, msg):
     global fan_on
     payload = msg.payload.decode().strip().upper()
-    if payload == "ON":
+    if payload == "ON" and not fan_on:
         GPIO.output(ENABLE_PIN, GPIO.HIGH)
         fan_on = True
-        print("Fan turned ON")
+        time.sleep(0.1)
     elif payload == "OFF":
         GPIO.output(ENABLE_PIN, GPIO.LOW)
         fan_on = False
-        print("Fan turned OFF")
+        time.sleep(0.1)
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
@@ -89,7 +89,7 @@ try:
         oled.image(image)
         oled.show()
 
-        print(f"Temp: {temp:.1f}°C | Fan: {'ON' if fan_on else 'OFF'}")
+        print(f"Temp: {temp:.1f}oC | Fan: {'ON' if fan_on else 'OFF'}")
 
         last_update = now
 
