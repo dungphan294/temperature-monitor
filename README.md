@@ -136,6 +136,6 @@ npx capacitor open android # or ios
 
 🖼️ Demonstration
 
-A brief GIF showing the application in action:(The file ./demo.gif should be placed in the root directory.)
+A brief GIF showing the application in action:
 
 ![demo](demo.gif)
