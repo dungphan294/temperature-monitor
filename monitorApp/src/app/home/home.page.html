@@ -1,0 +1,45 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Temperature Monitor - Raspberry Pi 4B
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>🌡️ Live Temperature</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-text-center">
+      <h1 *ngIf="temperature !== null">{{ temperature | number:'1.1-1' }} °C</h1>
+      <ion-spinner *ngIf="temperature === null" name="crescent"></ion-spinner>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Fan Control</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-button expand="block" color="{{ isOn ? 'success' : 'medium' }}" (click)="toggleFan()">
+        {{ isOn ? 'Turn OFF' : 'Turn ON' }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>📈 Temperature History</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div style="width: 100%; height: 800px; display: flex; justify-content: center; align-items: center;">
+        <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'line'"></canvas>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+
+</ion-content>

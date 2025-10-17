@@ -1,0 +1,7 @@
+{
+  "name": "monitorApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
