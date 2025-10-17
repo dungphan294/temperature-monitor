@@ -12,6 +12,7 @@ export class MqttService {
     temperature$ = new BehaviorSubject<number | null>(null);
 
     connect() {
+        
         this.client = mqtt.connect('ws://192.168.2.16:9001');
 
         this.client.on('connect', () => {
