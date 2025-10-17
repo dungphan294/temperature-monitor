@@ -1,6 +1,6 @@
-# 🌡️ Raspberry Pi CPU Monitor and Fan Controller (MQTT-Based)
+# 🌡️ Raspberry Pi CPU Monitor and Fan Controller - Ionic (Angular) and Capacitor
 
-This repository contains the code for a full-stack system designed to **monitor the CPU temperature of a Raspberry Pi** in real-time and allow **remote control of a cooling fan**. The communication backbone for the entire system is the **MQTT protocol**, providing a lightweight and efficient way to send and receive data between the Raspberry Pi (the producer) and a cross-platform mobile application (the consumer/controller).
+This repository contains the code for a full-stack system designed to monitor the CPU temperature of a Raspberry Pi in real-time and allow remote control of a cooling fan. The communication backbone for the entire system is the MQTT protocol, providing a lightweight and efficient way to send and receive data between the Raspberry Pi (the producer) and a cross-platform mobile application (the consumer/controller). The mobile application is built using Ionic (Angular) and Capacitor, enabling seamless deployment across iOS, Android, and the web. It features a real-time dashboard for temperature visualization and interactive fan control.
 
 ## ✨ Features
 
